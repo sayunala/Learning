@@ -586,4 +586,76 @@ class Group:public Surface{
   }
   ```
 
+  #### 4.5.3 第四版Lighting
+
+  + Lambertian Shading
+
+  $$
+  L=k_{d} I \max (0, \mathbf{n} \cdot \mathbf{l})
+  $$
+
+  1. $k_d$：是漫反射系数
+  2. $I$ ：是光强
+  3. $n$：着色点法线
+  4. $l$：着色点到光源的向量
+
+  + Blinn-Phong Shading
+
+  $$
+  \begin{aligned}
+  \mathbf{h} &=\frac{\mathbf{v}+\mathbf{l}}{\|\mathbf{v}+\mathbf{l}\|}, \\
+  L &=k_{d} I \max (0, \mathbf{n} \cdot \mathbf{l})+k_{s} I \max (0, \mathbf{n} \cdot \mathbf{h})^{p},
+  \end{aligned}
+  $$
+
+  1. $k_s$：镜面反射系数
+
+  2. $h$：如下
+
+  3. $p$：冯式指数
+
+     ![image-20221107143125799](F:\Markdown\Learning\CppLearning\image-20221107143125799.png)
+
++ 环境着色
+  $$
+  L=k_{a} I_{a}+k_{d} I \max (0, \mathbf{n} \cdot \mathbf{l})+k_{s} I \max (0, \mathbf{n} \cdot \mathbf{h})^{n},
+  $$
+
+  ### 4.6 光追程序
+
+  
+
+  ```cpp
+  for each pixel do:
+  	computer viewing ray;
+  	if(ray hits an object with t in[0,∞]){
+  		Computer n;//面法线
+  		Evaluate shading model and set pixel to that color；
+      }
+  	else{
+          set pixel color to background color;
+      }
+  	
+  ```
+
+  ### 4.7 阴影
+
+  ```cpp
+  color raycolor(Ray ray,real t0,real t1){
+      HitRecord rec,srec;
+      if(scene->hit(ray,t0,t1,rec))
+      {
+          Ray p=e+(rec.t).d;
+          color c=rec.ka*Ia;
+          if(not scene->hit(p+s*l,t0,t1,srec)){
+              vec3 h=normalize(normalized(l)+normalized(v));
+              c = c+rec.kd*I*Max(0,rec.n·l)+(rec.ks)·I·(rec.n,h)^p;
+          }
+          return c;
+          
+      }
+      else return background_color;
+  }
+  ```
+
   
